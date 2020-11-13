@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import {
   View,
   Image,
-  FlatList,
-  SafeAreaView
+  FlatList
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { WrapperBackground } from '../../components/WrapperBackground'
 import { launchCamera, launchImageLibrary } from '../../ImagePicker';
-import { THEME } from '../../theme';
 import { Btn } from '../../components/Btn';
 import styles from './styles'
 
@@ -67,41 +65,38 @@ export const FifthScreen = () => {
     setData(old => { return old.filter(elem => { return elem ? elem.favourite : null }) })
   }
 
+  const ItemImageView = ({ item }) => (
+    <View style={styles.itemWrap}>
+      <Image
+        style={styles.itemImg}
+        source={{ uri: item.uri }}
+      />
+      <View style={styles.itemBtnWrap}>
+        <Btn word='Delete' style={{ marginBottom: 15 }}
+          onPressBtn={() => { deleteItem(item.uri) }} />
+        <Btn word='Favourite' onPressBtn={() => { changeItem(item.uri) }} />
+      </View>
+    </View>
+  )
+
+
   return (
-    <SafeAreaView style={styles.container}>
-      <LinearGradient colors={THEME.GRADIENT_COLOR}
-        style={styles.gradient}>
-        <View style={styles.btnWrapper}>
-          <Btn word='Take image' style={styles.extra}
-            onPressBtn={onLaunchCamera} />
-          <Btn word='Select image' style={styles.extra}
-            onPressBtn={onLaunchImageLibrary} />
-          <Btn word='Only favourite' style={styles.extraB}
-            onPressBtn={showFavourite} />
-        </View>
+    <WrapperBackground>
+      <View style={styles.btnWrapper}>
+        <Btn word='Take image' style={styles.extra}
+          onPressBtn={onLaunchCamera} />
+        <Btn word='Select image' style={styles.extra}
+          onPressBtn={onLaunchImageLibrary} />
+        <Btn word='Only favourite' style={styles.extraB}
+          onPressBtn={showFavourite} />
+      </View>
 
-        {data.length > 0 && (
-          <FlatList
-            data={data}
-            keyExtractor={(item) => item.fileSize + item.fileName}
-            renderItem={({ item }) => {
-              return (
-                <View style={styles.itemWrap}>
-                  <Image
-                    style={styles.itemImg}
-                    source={{ uri: item.uri }}
-                  />
-                  <View style={styles.itemBtnWrap}>
-                    <Btn word='Delete' style={{ marginBottom: 15 }}
-                      onPressBtn={() => { deleteItem(item.uri) }} />
-                    <Btn word='Favourite' onPressBtn={() => { changeItem(item.uri) }} />
-                  </View>
-                </View>
-              )
-            }} />
-        )}
-
-      </LinearGradient>
-    </SafeAreaView>
+      {data.length > 0 && (
+        <FlatList
+          data={data}
+          keyExtractor={(item) => item.fileSize + item.fileName}
+          renderItem={ItemImageView} />
+      )}
+    </WrapperBackground>
   );
 };

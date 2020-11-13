@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, FlatList, Text } from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,6 +18,7 @@ export const ForthScreen = ({ navigation }) => {
 
   const dispatch = useDispatch();
   const reduxData = useSelector(state => state.dataAll.initData)//data из useState
+  const navToFifthScreen = useCallback(() => navigation.navigate('fifth'), [navigation])
 
   useEffect(() => { getData() }, [])
 
@@ -42,11 +43,21 @@ export const ForthScreen = ({ navigation }) => {
       .finally(() => setIsLoading(false))
   }
 
+  const ItemView = ({ item }) => (
+    <View style={styles.textWrapper}>
+      <Text style={styles.text}>
+        {item.id}
+        {'.'}
+        {item.title.toUpperCase()}
+      </Text>
+    </View>
+  )
+
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.btnWrap}>
         <Btn word='go next page' style={styles.extra}
-          onPressBtn={() => { navigation.navigate('fifth') }} />
+          onPressBtn={navToFifthScreen} />
       </View>
       {error
         ? (<View style={styles.erWrap}>
@@ -63,18 +74,8 @@ export const ForthScreen = ({ navigation }) => {
             onEndReachedThreshold={0.01}
             ListFooterComponent={() => isLoadingPagination ? <Loader /> : null}
             ListFooterComponentStyle={{ marginVertical: 40 }}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => {
-              return (
-                <View style={styles.textWrapper}>
-                  <Text style={styles.text}>
-                    {item.id}
-                    {'.'}
-                    {item.title.toUpperCase()}
-                  </Text>
-                </View>
-              )
-            }} />)}
+            keyExtractor={(index) => index.toString()}
+            renderItem={ItemView} />)}
     </View>
   )
 }

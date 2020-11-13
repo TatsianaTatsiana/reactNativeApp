@@ -3,12 +3,6 @@ import normalize from 'react-native-normalize';
 import { THEME } from '../../theme'
 
 export default StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  gradient: {
-    flex: 1,
-  },
   title: {
     color: '#fff',
     textAlign: 'center',
